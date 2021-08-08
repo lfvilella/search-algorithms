@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  app:
+    build: application
+    restart: ${RESTART:-always}
+    volumes:
+      - .:/app
+    working_dir: /app/application
+    stdin_open: true
+    tty: true
+    command: ${COMMAND:-/bin/bash}
