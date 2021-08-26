@@ -1,0 +1,338 @@
+import time
+import unittest
+
+from application.hanoi import graph
+from application import bfs, dfs
+
+
+class TestHanoi(unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+        self.graph = graph.GRAPH
+        self.graph_to_dfs = graph.GRAPH_TO_DFS
+
+    def _get_execution_period(self, function, **kwargs):
+        start = time.time()
+        function(**kwargs)
+        end = time.time()
+        return end - start
+
+    def test_bfs(self):
+        result = bfs.bfs(graph=self.graph, start=0, goal=26)
+        expected_result = [
+            0,
+            (2, 1),
+            (4, 1),
+            (8, 1),
+            (10, 1),
+            (14, 1),
+            (18, 1),
+            (26, 1),
+        ]
+        assert result == expected_result
+
+        result = bfs.bfs(graph=self.graph, start=5, goal=26)
+        expected_result = [
+            5,
+            (6, 1),
+            (7, 1),
+            (8, 1),
+            (10, 1),
+            (14, 1),
+            (18, 1),
+            (26, 1),
+        ]
+        assert result == expected_result
+
+        result = bfs.bfs(graph=self.graph, start=19, goal=26)
+        expected_result = [
+            19,
+            (20, 1),
+            (21, 1),
+            (22, 1),
+            (23, 1),
+            (24, 1),
+            (25, 1),
+            (26, 1),
+        ]
+        assert result == expected_result
+
+    def test_dfs(self):
+        dfs.reset_envs()
+        dfs.dfs(visited=set(), graph=self.graph_to_dfs, node=0)
+        assert dfs.RESULTS == [
+            0,
+            1,
+            2,
+            4,
+            7,
+            6,
+            3,
+            5,
+            9,
+            11,
+            12,
+            16,
+            21,
+            20,
+            15,
+            19,
+            22,
+            23,
+            17,
+            13,
+            10,
+            8,
+            14,
+            18,
+            25,
+            24,
+            26,
+        ]
+
+    def test_dfs_limited(self):
+        dfs.reset_envs()
+        dfs.dfs_limited(
+            visited=set(), graph=self.graph_to_dfs, node=0, current=0, limit=5,
+        )
+        assert dfs.RESULTS_LIMITED == [0, 1, 2, 4, 7, 6, 8, 3, 5, 9, 11, 12]
+
+    def test_dfs_iterative_limit(self):
+        dfs.reset_envs()
+        dfs.dfs_iterative_limit(
+            visited=set(), graph=self.graph_to_dfs, node=0, current=0, limit=5,
+        )
+        assert dfs.DATA == {
+            0: [0, 1, 2, 4, 7, 6],
+            1: [0, 1, 2, 4, 7, 6, 3],
+            2: [0, 1, 2, 4, 7, 6, 3, 5],
+            3: [0, 1, 2, 4, 7, 6, 3, 5, 9],
+            4: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11],
+            5: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11, 12],
+            6: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11, 12, 16],
+            7: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11, 12, 16, 21],
+            8: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11, 12, 16, 21, 20],
+            9: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11, 12, 16, 21, 20, 15],
+            10: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11, 12, 16, 21, 20, 15, 19],
+            11: [0, 1, 2, 4, 7, 6, 3, 5, 9, 11, 12, 16, 21, 20, 15, 19, 22],
+            12: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+            ],
+            13: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+            ],
+            14: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+                13,
+            ],
+            15: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+                13,
+                10,
+            ],
+            16: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+                13,
+                10,
+                8,
+            ],
+            17: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+                13,
+                10,
+                8,
+                14,
+            ],
+            18: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+                13,
+                10,
+                8,
+                14,
+                18,
+            ],
+            19: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+                13,
+                10,
+                8,
+                14,
+                18,
+                25,
+            ],
+            20: [
+                0,
+                1,
+                2,
+                4,
+                7,
+                6,
+                3,
+                5,
+                9,
+                11,
+                12,
+                16,
+                21,
+                20,
+                15,
+                19,
+                22,
+                23,
+                17,
+                13,
+                10,
+                8,
+                14,
+                18,
+                25,
+                24,
+            ],
+        }
+
+
+if __name__ == '__main__':
+    unittest.main()
